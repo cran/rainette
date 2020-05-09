@@ -12,7 +12,7 @@
 
 <meta name="author" content="Julien Barnier" />
 
-<meta name="date" content="2020-03-23" />
+<meta name="date" content="2020-05-09" />
 
 <title>[fr] Utilisation de rainette</title>
 
@@ -95,7 +95,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">[fr] Utilisation de rainette</h1>
 <h4 class="author">Julien Barnier</h4>
-<h4 class="date">2020-03-23</h4>
+<h4 class="date">2020-05-09</h4>
 
 
 
@@ -236,44 +236,54 @@ dtm &lt;-<span class="st"> </span><span class="kw">dfm_trim</span>(dtm, <span cl
 <p>Vous pouvez aussi récupérer directement les statistiques de spécificité de chaque groupe à l’aide de <code>rainette_stats</code> :</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rainette_stats</span>(corpus<span class="op">$</span>group, dtm, <span class="dt">n_terms =</span> <span class="dv">5</span>)</code></pre></div>
 <pre><code>## [[1]]
-##        feature     chi2            p n_target n_reference     sign
-## 1       libert 42.19021 8.281364e-11       11           3 positive
-## 2     l'abolit 41.28099 1.318446e-10       10           2 positive
-## 3     propriet 39.05037 4.130117e-10       24          31 positive
-## 4 intellectuel 29.32510 6.119792e-08        6           0 positive
-## 5     matériel 21.00524 4.580285e-06        7           3 positive
+## # A tibble: 5 x 6
+##   feature       chi2        p n_target n_reference sign    
+##   &lt;chr&gt;        &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   
+## 1 libert        42.2 8.28e-11       11           3 positive
+## 2 l'abolit      41.3 1.32e-10       10           2 positive
+## 3 propriet      39.1 4.13e-10       24          31 positive
+## 4 intellectuel  29.3 6.12e- 8        6           0 positive
+## 5 matériel      21.0 4.58e- 6        7           3 positive
 ## 
 ## [[2]]
-##     feature     chi2            p n_target n_reference     sign
-## 1      femm 50.61685 1.122769e-12       11           0 positive
-## 2    famill 44.68680 2.312106e-11       11           1 positive
-## 3   travail 38.64346 5.087345e-10       22          21 positive
-## 4    salari 35.22102 2.943302e-09        8           0 positive
-## 5 communaut 30.10540 4.091901e-08        7           0 positive
+## # A tibble: 5 x 6
+##   feature    chi2        p n_target n_reference sign    
+##   &lt;chr&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   
+## 1 femm       50.6 1.12e-12       11           0 positive
+## 2 famill     44.7 2.31e-11       11           1 positive
+## 3 travail    38.6 5.09e-10       22          21 positive
+## 4 salari     35.2 2.94e- 9        8           0 positive
+## 5 communaut  30.1 4.09e- 8        7           0 positive
 ## 
 ## [[3]]
-##      feature     chi2            p n_target n_reference     sign
-## 1      moyen 35.72582 2.271334e-09       23          13 positive
-## 2  l'industr 28.62089 8.802760e-08       14           4 positive
-## 3      petit 28.54547 9.152349e-08       13           3 positive
-## 4 industriel 22.24150 2.404204e-06       11           3 positive
-## 5    commerc 19.51376 9.987764e-06       11           4 positive
+## # A tibble: 5 x 6
+##   feature     chi2             p n_target n_reference sign    
+##   &lt;chr&gt;      &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   
+## 1 moyen       35.7 0.00000000227       23          13 positive
+## 2 l'industr   28.6 0.0000000880        14           4 positive
+## 3 petit       28.5 0.0000000915        13           3 positive
+## 4 industriel  22.2 0.00000240          11           3 positive
+## 5 commerc     19.5 0.00000999          11           4 positive
 ## 
 ## [[4]]
-##       feature      chi2            p n_target n_reference     sign
-## 1       class  42.99966 5.474921e-11       61          43 positive
-## 2 prolétariat  32.89047 9.750027e-09       37          21 positive
-## 3        lutt  31.57818 1.915696e-08       26          10 positive
-## 4       propr  17.96073 2.255100e-05       13           4 positive
-## 5    propriet -15.59522 7.845250e-05        3          52 negative
+## # A tibble: 5 x 6
+##   feature      chi2        p n_target n_reference sign    
+##   &lt;chr&gt;       &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   
+## 1 class        43.0 5.47e-11       61          43 positive
+## 2 prolétariat  32.9 9.75e- 9       37          21 positive
+## 3 lutt         31.6 1.92e- 8       26          10 positive
+## 4 propr        18.0 2.26e- 5       13           4 positive
+## 5 propriet    -15.6 7.85e- 5        3          52 negative
 ## 
 ## [[5]]
-##      feature     chi2            p n_target n_reference     sign
-## 1      contr 31.69885 1.800287e-08       21          21 positive
-## 2   français 29.22863 6.432168e-08       11           4 positive
-## 3 littératur 24.11256 9.086558e-07        9           3 positive
-## 4     social 21.18100 4.178875e-06       29          50 positive
-## 5   allemand 19.23057 1.158436e-05       11           8 positive</code></pre>
+## # A tibble: 5 x 6
+##   feature     chi2            p n_target n_reference sign    
+##   &lt;chr&gt;      &lt;dbl&gt;        &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   
+## 1 contr       31.7 0.0000000180       21          21 positive
+## 2 français    29.2 0.0000000643       11           4 positive
+## 3 littératur  24.1 0.000000909         9           3 positive
+## 4 social      21.2 0.00000418         29          50 positive
+## 5 allemand    19.2 0.0000116          11           8 positive</code></pre>
 </div>
 <div id="classification-double" class="section level1">
 <h1>Classification double</h1>
@@ -293,28 +303,34 @@ res2 &lt;-<span class="st"> </span><span class="kw">rainette</span>(dtm, <span c
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">groups &lt;-<span class="st"> </span><span class="kw">cutree</span>(res, <span class="dv">3</span>)
 <span class="kw">rainette_stats</span>(groups, dtm, <span class="dt">n_terms =</span> <span class="dv">5</span>)</code></pre></div>
 <pre><code>## [[1]]
-##       feature      chi2            p n_target n_reference     sign
-## 1     travail -58.08634 2.509104e-14        4          39 negative
-## 2           a -54.00274 2.001732e-13        8          43 negative
-## 3    propriet -44.59543 2.422573e-11       12          43 negative
-## 4 prolétariat  26.19519 3.085908e-07       56           2 positive
-## 5      famill -19.23056 1.158442e-05        0          12 negative
+## # A tibble: 5 x 6
+##   feature      chi2        p n_target n_reference sign    
+##   &lt;chr&gt;       &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   
+## 1 travail     -58.1 2.51e-14        4          39 negative
+## 2 a           -54.0 2.00e-13        8          43 negative
+## 3 propriet    -44.6 2.42e-11       12          43 negative
+## 4 prolétariat  26.2 3.09e- 7       56           2 positive
+## 5 famill      -19.2 1.16e- 5        0          12 negative
 ## 
 ## [[2]]
-##        feature     chi2            p n_target n_reference     sign
-## 1 intellectuel 47.81232 4.690359e-12        6           0 positive
-## 2     propriet 47.61318 5.191847e-12       20          35 positive
-## 3     l'abolit 39.89725 2.676803e-10        8           4 positive
-## 4       libert 32.22635 1.372170e-08        8           6 positive
-## 5       l'éduc 30.40413 3.507810e-08        5           1 positive
+## # A tibble: 5 x 6
+##   feature       chi2        p n_target n_reference sign    
+##   &lt;chr&gt;        &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   
+## 1 intellectuel  47.8 4.69e-12        6           0 positive
+## 2 propriet      47.6 5.19e-12       20          35 positive
+## 3 l'abolit      39.9 2.68e-10        8           4 positive
+## 4 libert        32.2 1.37e- 8        8           6 positive
+## 5 l'éduc        30.4 3.51e- 8        5           1 positive
 ## 
 ## [[3]]
-##     feature     chi2            p n_target n_reference     sign
-## 1      femm 57.27264 3.796963e-14       11           0 positive
-## 2    salari 39.88690 2.691024e-10        8           0 positive
-## 3   travail 34.96306 3.360200e-09       20          23 positive
-## 4 communaut 34.10959 5.209383e-09        7           0 positive
-## 5    famill 30.19010 3.917046e-08        9           3 positive</code></pre>
+## # A tibble: 5 x 6
+##   feature    chi2        p n_target n_reference sign    
+##   &lt;chr&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   
+## 1 femm       57.3 3.80e-14       11           0 positive
+## 2 salari     39.9 2.69e-10        8           0 positive
+## 3 travail    35.0 3.36e- 9       20          23 positive
+## 4 communaut  34.1 5.21e- 9        7           0 positive
+## 5 famill     30.2 3.92e- 8        9           3 positive</code></pre>
 <p>Si certains points n’ont pas été affecté à un groupe, vous pouvez utiliser <code>rainette2_complete_groups</code> pour les assigner au groupe le plus proche selon une méthode <em>k-nearest neighbors</em> :</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">groups_completed &lt;-<span class="st"> </span><span class="kw">rainette2_complete_groups</span>(dtm, groups)</code></pre></div>
 </div>

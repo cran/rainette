@@ -12,7 +12,7 @@
 
 <meta name="author" content="Julien Barnier" />
 
-<meta name="date" content="2020-03-23" />
+<meta name="date" content="2020-05-09" />
 
 <title>[en] Introduction to rainette</title>
 
@@ -95,7 +95,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">[en] Introduction to rainette</h1>
 <h4 class="author">Julien Barnier</h4>
-<h4 class="date">2020-03-23</h4>
+<h4 class="date">2020-05-09</h4>
 
 
 
@@ -233,28 +233,34 @@ corpus &lt;-<span class="st"> </span><span class="kw">split_segments</span>(data
 <p>Finally, you can also directly compute each cluster keyness statistics with the <code>rainette_stats</code> function :</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rainette_stats</span>(corpus<span class="op">$</span>group, dtm, <span class="dt">n_terms =</span> <span class="dv">5</span>)</code></pre></div>
 <pre><code>## [[1]]
-##     feature     chi2 p n_target n_reference     sign
-## 1    duties 230.8888 0       43          49 positive
-## 2    office 217.2144 0       37          37 positive
-## 3 discharge 153.3694 0       20          11 positive
-## 4     trust 131.7021 0       27          33 positive
-## 5   station 127.9231 0       13           3 positive
+## # A tibble: 5 x 6
+##   feature    chi2     p n_target n_reference sign    
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   
+## 1 duties     231.     0       43          49 positive
+## 2 office     217.     0       37          37 positive
+## 3 discharge  153.     0       20          11 positive
+## 4 trust      132.     0       27          33 positive
+## 5 station    128.     0       13           3 positive
 ## 
 ## [[2]]
-##   feature      chi2 p n_target n_reference     sign
-## 1   world -150.5683 0       54         257 negative
-## 2      us -144.4587 0      118         360 negative
-## 3 america -128.5886 0       19         165 negative
-## 4     new -110.8850 0       46         201 negative
-## 5  states  108.9634 0      268          65 positive
+## # A tibble: 5 x 6
+##   feature  chi2     p n_target n_reference sign    
+##   &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   
+## 1 world   -151.     0       54         257 negative
+## 2 us      -144.     0      118         360 negative
+## 3 america -129.     0       19         165 negative
+## 4 new     -111.     0       46         201 negative
+## 5 states   109.     0      268          65 positive
 ## 
 ## [[3]]
-##   feature     chi2 p n_target n_reference     sign
-## 1   world 208.7667 0      253          58 positive
-## 2      us 199.6237 0      348         130 positive
-## 3 america 167.6163 0      162          22 positive
-## 4     new 146.3597 0      195          52 positive
-## 5     let 130.3271 0      133          21 positive</code></pre>
+## # A tibble: 5 x 6
+##   feature  chi2     p n_target n_reference sign    
+##   &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   
+## 1 world    209.     0      253          58 positive
+## 2 us       200.     0      348         130 positive
+## 3 america  168.     0      162          22 positive
+## 4 new      146.     0      195          52 positive
+## 5 let      130.     0      133          21 positive</code></pre>
 </div>
 <div id="double-clustering-1" class="section level2">
 <h2>Double clustering</h2>
@@ -278,28 +284,34 @@ res2 &lt;-<span class="st"> </span><span class="kw">rainette</span>(dtm, <span c
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">groups &lt;-<span class="st"> </span><span class="kw">cutree</span>(res, <span class="dv">3</span>)
 <span class="kw">rainette_stats</span>(groups, dtm, <span class="dt">n_terms =</span> <span class="dv">5</span>)</code></pre></div>
 <pre><code>## [[1]]
-##   feature      chi2 p n_target n_reference     sign
-## 1      us -224.4408 0      110         368 negative
-## 2   world -204.7632 0       52         259 negative
-## 3 america -166.2747 0       18         166 negative
-## 4     new -144.2214 0       47         200 negative
-## 5     let -139.3235 0       15         139 negative
+## # A tibble: 5 x 6
+##   feature  chi2     p n_target n_reference sign    
+##   &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   
+## 1 us      -224.     0      110         368 negative
+## 2 world   -205.     0       52         259 negative
+## 3 america -166.     0       18         166 negative
+## 4 new     -144.     0       47         200 negative
+## 5 let     -139.     0       15         139 negative
 ## 
 ## [[2]]
-##     feature      chi2 p n_target n_reference     sign
-## 1        mr 2539.2538 0       20          11 positive
-## 2      vice 1906.3277 0       13           4 positive
-## 3   senator 1166.7929 0        8           2 positive
-## 4 president  870.5701 0       20          68 positive
-## 5     chief  508.0799 0       10          26 positive
+## # A tibble: 5 x 6
+##   feature    chi2     p n_target n_reference sign    
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   
+## 1 mr        2539.     0       20          11 positive
+## 2 vice      1906.     0       13           4 positive
+## 3 senator   1167.     0        8           2 positive
+## 4 president  871.     0       20          68 positive
+## 5 chief      508.     0       10          26 positive
 ## 
 ## [[3]]
-##   feature     chi2 p n_target n_reference     sign
-## 1      us 212.7783 0      330         148 positive
-## 2   world 206.5435 0      237          74 positive
-## 3 america 185.1384 0      157          27 positive
-## 4     new 173.3178 0      191          56 positive
-## 5     let 157.3480 0      132          22 positive</code></pre>
+## # A tibble: 5 x 6
+##   feature  chi2     p n_target n_reference sign    
+##   &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   
+## 1 us       213.     0      330         148 positive
+## 2 world    207.     0      237          74 positive
+## 3 america  185.     0      157          27 positive
+## 4 new      173.     0      191          56 positive
+## 5 let      157.     0      132          22 positive</code></pre>
 <p>Finally, if some points are not assigned to any cluster, you can use <code>rainette2_complete_groups</code> to assign them to the nearest one by using a <em>k-nearest-neighbors</em> algorithm :</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">groups_completed &lt;-<span class="st"> </span><span class="kw">rainette2_complete_groups</span>(dtm, groups)</code></pre></div>
 </div>

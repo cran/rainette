@@ -60,6 +60,7 @@ For more details on optimal partitions search algorithm, please see package vign
 }
 \examples{
 \donttest{
+require(quanteda)
 mini_corpus <- head(data_corpus_inaugural, n = 2)
 mini_corpus <- split_segments(mini_corpus, 5)
 dtm <- dfm(mini_corpus, remove = stopwords("en"), tolower = TRUE, remove_punct = TRUE)
@@ -70,7 +71,6 @@ res1 <- rainette(dtm, k = 5, min_uc_size = 2, min_split_members = 2)
 res2 <- rainette(dtm, k = 5, min_uc_size = 3, min_split_members = 2)
 
 res <- rainette2(res1, res2, min_members = 2)
-rainette2_explor(res, dtm)
 }
 }
 \references{
