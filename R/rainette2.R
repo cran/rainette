@@ -15,7 +15,7 @@ compute_chi2 <- function(n_both, n1, n2, n_tot) {
 
 get_groups <- function(res) {
   groups <- purrr::imap_dfc(res$uce_groups, ~ {
-    v <- data.frame(paste(.y, .x, sep="."))
+    v <- data.frame(paste(.y, .x, sep="."), stringsAsFactors = FALSE)
     colnames(v) <- .y
     v
   })
@@ -186,7 +186,7 @@ get_optimal_partitions <- function(partitions, valid, n_tot) {
 #' @references 
 #' 
 #' - Reinert M, Une méthode de classification descendante hiérarchique : application à l'analyse lexicale par contexte, Cahiers de l'analyse des données, Volume 8, Numéro 2, 1983. <http://www.numdam.org/item/?id=CAD_1983__8_2_187_0>
-#' - Reinert M., Alceste une méthodologie d'analyse des données textuelles et une application: Aurelia De Gerard De Nerval, Bulletin de Méthodologie Sociologique, Volume 26, Numéro 1, 1990. <https://doi.org/10.1177/075910639002600103>
+#' - Reinert M., Alceste une méthodologie d'analyse des données textuelles et une application: Aurelia De Gerard De Nerval, Bulletin de Méthodologie Sociologique, Volume 26, Numéro 1, 1990.  \doi{10.1177/075910639002600103}
 #'
 #' @export
 #' 

@@ -11,7 +11,7 @@
 
 The package website can be found at : https://juba.github.io/rainette/.
 
-Rainette is an R package which implements a variant of the Reinert textual clustering method. This method is available in other software such as [Iramuteq](http://www.iramuteq.org/) (free software) or [Alceste](http://www.image-zafar.com/Logiciel.html) (commercial, closed source).
+Rainette is an R package which implements a variant of the Reinert textual clustering method. This method is available in other software such as [Iramuteq](http://www.iramuteq.org/) (free software) or [Alceste](https://www.image-zafar.com/Logiciel.html) (commercial, closed source).
 
 ## Features
 
@@ -121,3 +121,5 @@ This classification method has been created by Max Reinert, and is described in 
 Thanks to Pierre Ratineau, the author of [Iramuteq](http://www.iramuteq.org/), for providing it as free software and open source. Even if the R code has been almost entirely rewritten, it has been a precious resource to understand the algorithms.
 
 Many thanks to [Sébastien Rochette](https://github.com/statnmap) for the creation of the hex logo.
+
+Many thanks to [Florian Privé](https://github.com/privefl/) for his work on rewriting and optimizing Rcpp code.
