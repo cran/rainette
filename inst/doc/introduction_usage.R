@@ -24,7 +24,7 @@ corpus
 head(docvars(corpus))
 
 ## -----------------------------------------------------------------------------
-texts(corpus)[1:2]
+as.character(corpus)[1:2]
 
 ## -----------------------------------------------------------------------------
 dtm <- dfm(corpus, remove = stopwords("fr"), tolower = TRUE, remove_punct = TRUE, remove_numbers = TRUE)
