@@ -161,10 +161,13 @@ get_optimal_partitions <- function(partitions, valid, n_tot) {
 #' @param y if `x` is a [rainette()] result, this must be another [rainette()] 
 #'   result from same dfm but with different uc size.
 #' @param max_k maximum number of clusters to compute
-#' @param uc_size1 if `x` is a dfm, minimum uc size for first clustering
-#' @param uc_size2 if `x` is a dfm, minimum uc size for second clustering
+#' @param min_segment_size1 if `x` is a dfm, minimum uc size for first clustering
+#' @param min_segment_size2 if `x` is a dfm, minimum uc size for second clustering
+#' @param doc_id character name of a dtm docvar which identifies source documents.
 #' @param min_members minimum members of each cluster
 #' @param min_chi2 minimum chi2 for each cluster
+#' @param uc_size1 deprecated, use min_segment_size1 instead
+#' @param uc_size2 deprecated, use min_segment_size2 instead
 #' @param ... if `x` is a dfm object, parameters passed to [rainette()] for both
 #'   simple clusterings
 #'
@@ -176,6 +179,9 @@ get_optimal_partitions <- function(partitions, valid, n_tot) {
 #' If both clusterings have already been computed, you can pass them as `x` and `y` arguments
 #' and the function will only look for optimal partitions.
 #'
+#' `doc_id` must be provided unless the corpus comes from `split_segments`,
+#' in this case `segment_source` is used by default.
+#' 
 #' For more details on optimal partitions search algorithm, please see package vignettes.
 #'
 #' @return
@@ -200,33 +206,53 @@ get_optimal_partitions <- function(partitions, valid, n_tot) {
 #' @examples
 #' \donttest{
 #' require(quanteda)
-#' mini_corpus <- head(data_corpus_inaugural, n = 2)
-#' mini_corpus <- split_segments(mini_corpus, 5)
-#' dtm <- dfm(mini_corpus, remove = stopwords("en"), tolower = TRUE, remove_punct = TRUE)
-#' dtm <- dfm_wordstem(dtm, language = "english")
-#' dtm <- dfm_trim(dtm, min_termfreq = 3)
+#' corpus <- data_corpus_inaugural
+#' corpus <- head(corpus, n = 10)
+#' corpus <- split_segments(corpus)
+#' tok <- tokens(corpus, remove_punct = TRUE)
+#' tok <- tokens_remove(tok, stopwords("en"))
+#' dtm <- dfm(tok, tolower = TRUE)
+#' dtm <- dfm_trim(dtm, min_docfreq = 3)
 #'
-#' res1 <- rainette(dtm, k = 5, min_uc_size = 2, min_split_members = 2)
-#' res2 <- rainette(dtm, k = 5, min_uc_size = 3, min_split_members = 2)
+#' res1 <- rainette(dtm, k = 5, min_segment_size = 10)
+#' res2 <- rainette(dtm, k = 5, min_segment_size = 15)
 #'
-#' res <- rainette2(res1, res2, min_members = 2)
+#' res <- rainette2(res1, res2, max_k = 4)
 #' }
 
 
-rainette2 <- function(x, y = NULL, max_k = 5, uc_size1 = 10, uc_size2 = 15,
-  min_members = 10, min_chi2 = 3.84, ...) {
+rainette2 <- function(
+  x, y = NULL, max_k = 5, 
+  min_segment_size1 = 10, min_segment_size2 = 15,
+  doc_id = NULL, min_members = 10, min_chi2 = 3.84, 
+  uc_size1, uc_size2, ...) {
+
+  ## Check for deprecated uc_size1 argument
+  if (!missing(uc_size1)) {
+    warning("uc_size1 is deprecated. Use min_segment_size1 instead.")
+    if (missing(min_segment_size1)) {
+      min_segment_size1 <- uc_size1
+    }
+  }
+  ## Check for deprecated uc_size2 argument
+  if (!missing(uc_size2)) {
+    warning("uc_size2 is deprecated. Use min_segment_size2 instead.")
+    if (missing(min_segment_size2)) {
+      min_segment_size2 <- uc_size2
+    }
+  }
 
   ## If passed a dfm, compute both clustering
   if (inherits(x, "dfm")) {
     dtm <- x
-    message("  Computing first clustering with uc_size1 = ", uc_size1)
+    message("  Computing first clustering with min_segment_size1 = ", min_segment_size1)
     x <- rainette::rainette(
-      dtm, k = max_k, min_uc_size = uc_size1,
+      dtm, k = max_k, min_segment_size = min_segment_size1, doc_id = doc_id,
       min_split_members = min_members, ...
     )
-    message("  Computing second clustering with uc_size2 = ", uc_size2)
+    message("  Computing second clustering with min_segment_size2 = ", min_segment_size2)
     y <- rainette::rainette(
-      dtm, k = max_k, min_uc_size = uc_size2,
+      dtm, k = max_k, min_segment_size = min_segment_size2, doc_id = doc_id,
       min_split_members = min_members, ...
     )
   }

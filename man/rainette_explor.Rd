@@ -4,12 +4,14 @@
 \alias{rainette_explor}
 \title{Shiny gadget for rainette clustering exploration}
 \usage{
-rainette_explor(res, dtm)
+rainette_explor(res, dtm = NULL, corpus_src = NULL)
 }
 \arguments{
 \item{res}{result object of a \code{rainette} clustering}
 
 \item{dtm}{the dfm object used to compute the clustering}
+
+\item{corpus_src}{the quanteda corpus object used to compute the dtm}
 }
 \value{
 No return value, called for side effects.
@@ -19,14 +21,16 @@ Shiny gadget for rainette clustering exploration
 }
 \examples{
 \dontrun{
-library(quanteda)
+require(quanteda)
 corpus <- data_corpus_inaugural
 corpus <- head(corpus, n = 10)
 corpus <- split_segments(corpus)
-dtm <- dfm(corpus, remove = stopwords("en"), tolower = TRUE, remove_punct = TRUE)
-dtm <- dfm_trim(dtm, min_termfreq = 3)
-res <- rainette(dtm, k = 3)
-rainette_explor(dtm, res)
+tok <- tokens(corpus, remove_punct = TRUE)
+tok <- tokens_remove(tok, stopwords("en"))
+dtm <- dfm(tok, tolower = TRUE)
+dtm <- dfm_trim(dtm, min_docfreq = 3)
+res <- rainette(dtm, k = 3, min_segment_size = 15)
+rainette_explor(res, dtm, corpus)
 }
 
 }

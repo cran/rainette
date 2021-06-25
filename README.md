@@ -7,8 +7,7 @@
 
 <img src="man/figures/logo.png" width=200 align="right" />
 
-
-The package website can be found at : https://juba.github.io/rainette/.
+The package website can be found at : [https://juba.github.io/rainette/](https://juba.github.io/rainette/).
 
 Rainette is an R package which implements a variant of the Reinert textual clustering method. This method is available in other software such as [Iramuteq](http://www.iramuteq.org/) (free software) or [Alceste](https://www.image-zafar.com/Logiciel.html) (commercial, closed source).
 
@@ -18,7 +17,7 @@ Rainette is an R package which implements a variant of the Reinert textual clust
 - Plot functions and shiny gadgets to visualise and explore clustering results
 - Utility functions to split a corpus into segments or import a corpus in Iramuteq format
 
-## Installation and usage
+## Installation
 
 The package is installable from CRAN :
 
@@ -26,11 +25,19 @@ The package is installable from CRAN :
 install_packages("rainette")
 ```
 
-The development version is installable from Github :
+The development version is installable from [R-universe](https://r-universe.dev) :
 
 ```r
-remotes::install_github("juba/rainette")
+options(
+    repos = c(
+        juba = 'https://juba.r-universe.dev',
+        CRAN = 'https://cloud.r-project.org'
+    )
+)
+install.packages('rainette')
 ```
+
+## Usage
 
 Let's start with an example corpus provided by the excellent [quanteda](https://quanteda.io) package :
 
@@ -39,33 +46,38 @@ library(quanteda)
 data_corpus_inaugural
 ```
 
-First, we'll use `split_segments` to split each text in the corpus into segments of about 40 words (punctuation is taken into account) :
+First, we'll use `split_segments` to split each document into segments of about 40 words (punctuation is taken into account) :
 
 ```r
 corpus <- split_segments(data_corpus_inaugural, segment_size = 40)
 ```
 
-Next, we'll compute a document-term matrix and apply some treatments with `quanteda` functions :
+Next, we'll apply some preprocessing and compute a document-term matrix with `quanteda` functions :
 
 ```r
-dtm <- dfm(corpus, remove = stopwords("en"), tolower = TRUE, remove_punct = TRUE)
-dtm <- dfm_wordstem(dtm, language = "english")
-dtm <- dfm_trim(dtm, min_termfreq = 3)
+tok <- tokens(corpus, remove_punct = TRUE)
+tok <- tokens_remove(tok, stopwords("en"))
+dtm <- dfm(tok, tolower = TRUE)
+dtm <- dfm_trim(dtm, min_docfreq = 10)
 ```
 
-We can then apply a simple clustering on this dtm with the `rainette` function. We specify the number of clusters (`k`), the minimum size for a cluster to be splitted at next step (`min_split_members`) and the minimum number of forms in each segment (`min_uc_size`) :
+We can then apply a simple clustering on this matrix with the `rainette` function. We specify the number of clusters (`k`), and the minimum number of forms in each segment (`min_segment_size`). Segments which do not include enough forms will be merged with the following or previous one when possible.
 
 ```r
-res <- rainette(dtm, k = 6, min_uc_size = 15, min_split_members = 20)
+res <- rainette(dtm, k = 6, min_segment_size = 15)
 ```
 
 We can use the `rainette_explor` shiny interface to visualise and explore the different clusterings at each `k` :
 
 ```r
-rainette_explor(res, dtm)
+rainette_explor(res, dtm, corpus)
 ```
 
-![](man/figures/rainette_explor.png)
+![rainette_explor_plot](man/figures/rainette_explor_plot_en.png)
+
+The *Cluster documents* tab allows to browse and filter the documents in each cluster :
+
+![rainette_explor_docs](man/figures/rainette_explor_docs_en.png)
 
 We can then use the generated R code to reproduce the displayed clustering visualisation plot :
 
@@ -76,39 +88,33 @@ rainette_plot(res, dtm, k = 5, type = "bar", n_terms = 20, free_scales = FALSE,
 
 Or cut the tree at chosen `k` and add a group membership variable to our corpus metadata :
 
-```    
-docvars(corpus)$group <- cutree_rainette(res, k = 5)
+```r
+docvars(corpus)$cluster <- cutree(res, k = 5)
 ```
 
-In addition to this, you can also perform a double clustering, *ie* two simple clusterings produced with different `min_uc_size` which are then "crossed" to generate more solid clusters. To do this, use `rainette2` either on two `rainette` results :
+In addition to this, we can also perform a double clustering, *ie* two simple clusterings produced with different `min_segment_size` which are then "crossed" to generate more robust clusters. To do this, we use `rainette2` on two `rainette` results :
 
 ```r
-res1 <- rainette(dtm, k = 10, min_uc_size = 10, min_split_members = 10)
-res2 <- rainette(dtm, k = 10, min_uc_size = 15, min_split_members = 10)
-res <- rainette2(res1, res2, max_k = 10, min_members = 20)
+res1 <- rainette(dtm, k = 5, min_segment_size = 10, min_split_members = 10)
+res2 <- rainette(dtm, k = 5, min_segment_size = 15, min_split_members = 10)
+res <- rainette2(res1, res2, max_k = 5, min_members = 10)
 ```
 
-Or directly on a dtm with `uc_size1` and `uc_size2` arguments :
+We can then use `rainette2_explor` to explore and visualise the results.
 
 ```r
-rainette2(dtm, max_k = 10, uc_size1 = 10, uc_size2 = 15, min_members = 20)
+rainette2_explor(res, dtm, corpus)
 ```
 
-You can then use `rainette2_explor`, `rainette2_plot` and `cutree_rainette2` to explore and visualise the results.
-
-![](man/figures/rainette2_explor.png)
+![rainette2_explor](man/figures/rainette2_explor_en.png)
 
 ## Tell me more
 
-Three vignettes are available, an introduction in english :
+Three vignettes are available :
 
-- [Introduction to rainette](https://juba.github.io/rainette/articles/introduction_en.html)
-
-
-And an introduction and an algorithm description, in french :
-
-- [Introduction à rainette](https://juba.github.io/rainette/articles/introduction_usage.html)
-- [Description des algorithmes](https://juba.github.io/rainette/articles/algorithmes.html)
+- An introduction in english : [Introduction to rainette](https://juba.github.io/rainette/articles/introduction_en.html)
+- An introduction in french : [Introduction à rainette](https://juba.github.io/rainette/articles/introduction_usage.html)
+- An algorithm description in french : [Description des algorithmes](https://juba.github.io/rainette/articles/algorithmes.html)
 
 ## Credits
 

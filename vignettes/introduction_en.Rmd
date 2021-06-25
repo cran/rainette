@@ -13,24 +13,23 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
 # Reinert textual clustering method
 
 `rainette` is an R implementation of the Reinert textual clustering algorithm.
 This algorithm is already available in softwares like
-[Iramuteq](http://www.iramuteq.org/) or Alceste, the goal of `rainette` is
+[Iramuteq](http://www.iramuteq.org/) or Alceste, the goal of `rainette` being
 to provide it as an R package.
 
 This is not a new algorithm, as the first articles describing it date back
-to 1983. Here are some features of the method :
+to 1983. Here are some characteristics of the method :
 
 - each text is only assigned to one cluster, unlike methods like LDA.
-- it is better suited to cluster small "homogeneous" documents : in fact the
-  good practice is first to split texts into segments before applying the
-  method.
+- it is then better suited for small "homogeneous" documents : for long texts the
+  good practice is first to split them into segments.
 - as the algorithm uses a singular value decomposition of a document-term
-  matrix, the algorithm may not work on very large corpus.
-
+  matrix, it is relatively fast but may not work on very large corpus. In this case, 
+  as only the smaller dimension of the matrix is taken into account for the decomposition, 
+  a workaround can be to reduce the number of features by removing the less frequent terms.
 
 ## Description of the algorithm
 
@@ -39,12 +38,12 @@ is to maximise the inter-cluster Chi-squared distance.
 
 The algorithm is applied to the document-term matrix computed on the corpus.
 Documents are called `uce` (elementary context units). If an `uce` doesn't
-include enough terms, it is merged with the following one into an `uc`
+include enough terms, it can be merged with the following or previous one into an `uc`
 (context unit). The resulting matrix is then weighted as binary, so only the
 presence/absence of terms are taken into account, not their frequencies.
 
 The aim is to split this matrix into two clusters by maximizing the
-Chi-squared distance between those. As an exhaustive search would be too
+Chi-squared distance between those. As an exaustive search would be too
 compute-intensive, the following method is used to get a good approximation :
 
 - first, `uc` are ordered according to their coordinates on the first axis of
@@ -106,12 +105,12 @@ k-nearest-neighbour clustering for non-assigned documents.
 
 As explained before, as it doesn't take into account terms frequencies and
 assign each document to only one cluster, the Reinert method must be applied
-to short and "homogeneous" documents. It could be ok if your work on short
-comments on a website, but on longer documents the corpus must first be split
-into small textual segments.
+to short and "homogeneous" documents. It could be ok if you work on tweets or short
+answers to a specific question, but on longer documents the corpus must first be split
+into short textual segments.
 
 The `split_segments` function does just that, and can be applied on a `tm` or
-`quanteda` corpus. 
+`quanteda` corpus.
 
 On this article we will apply it to the sample `data_corpus_inaugural`
 `quanteda` corpus :
@@ -119,21 +118,19 @@ On this article we will apply it to the sample `data_corpus_inaugural`
 ```{r warnings = FALSE, message  = FALSE}
 library(quanteda)
 library(rainette)
-corpus <- split_segments(data_corpus_inaugural)
+corpus <- split_segments(data_corpus_inaugural, segment_size = 40)
 ```
 
 `split_segments` will split the original texts into smaller chunks, attempting to
-respect sentences and punctuation when possible. The function takes three
+respect sentences and punctuation when possible. The function takes two
 arguments :
 
 - `segment_size` : the preferred segment size, in words
 - `segment_size_window` : the "window" into which looking for the best segment
   split, in words. If `NULL`, it is set to 0.4*`segment_size`.
-- `force_single_core` : by default, multithreading is used when the corpus is
-  big. Set this to `TRUE` to disable multithreading completely.
 
-The result of the function is always a `quanteda` corpus, which keeps the
-original corpus metadata :
+The result of the function is a `quanteda` corpus, which keeps the
+original corpus metadata with an additional `segment_source` variable :
 
 ```{r}
 corpus
@@ -146,17 +143,18 @@ head(docvars(corpus))
 ### dfm computation
 
 Next step is to compute the document-feature matrix. As our `corpus` object is
-a `quanteda` corpus, we can use its `dfm` function :
+a `quanteda` corpus, we can tokenize it and then use the `dfm` function :
 
 ```{r}
-dtm <- dfm(corpus, remove = stopwords("en"), tolower = TRUE, remove_punct = TRUE)
+tok <- tokens(corpus, remove_punct = TRUE)
+tok <- tokens_remove(tok, stopwords("en"))
+dtm <- dfm(tok, tolower = TRUE)
 ```
 
-We only keep the terms that appear at least in 10 segments by using `dfm_trim`
-:
+We only keep the terms that appear at least in 10 segments by using `dfm_trim` :
 
 ```{r}
-dtm <- dfm_trim(dtm, min_termfreq = 10)
+dtm <- dfm_trim(dtm, min_docfreq = 10)
 ```
 
 ## Simple clustering
@@ -165,89 +163,100 @@ We are now ready to compute a simple Reinert clustering by using the
 `rainette` function. Its main arguments are :
 
 - `k` : the number of clusters to compute.
-- `min_uc_size` : the minimum number of terms in each context unit at startup
-  (default : 10). If a `dfm` document contains less than this number of terms,
-  it will be merged with the following one.
+- `min_segment_size` : the minimum number of terms in each context unit at startup. 
+  If a `dfm` segment contains less than this number of terms, it will be merged 
+  with the following one (if they come from the same source document). The default 
+  value is 0, *ie* no merging is done.
 - `min_split_members` : if a cluster is smaller than this value, it won't be
   split afterwards (default : 5).
   
-Here we will compute 5 clusters with a `minimum_uc_size` of 15 :
+Here we will compute 5 clusters with a `min_segment_size` of 15 :
 
-```{r message = FALSE}
-res <- rainette(dtm, k = 5, min_uc_size = 15)
+```{r message = FALSE, warning = FALSE}
+res <- rainette(dtm, k = 5, min_segment_size = 15)
 ```
 
-To help exploring the clustering results, `rainette` offers a small *shiny
-gadget* which can be launched with `rainette_explor` :
+To help exploring the clustering results, `rainette` offers an interactive interface which can be launched with `rainette_explor` :
 
 ```{r eval = FALSE}
-rainette_explor(res, dtm)
+rainette_explor(res, dtm, corpus)
 ```
 
 The interactive interface should look something like this :
 
-![](rainette_explor_en.png)
+![](rainette_explor_plot_en.png)
 
-You can change the number of clusters, the keyness statistic used, etc., and
-see the result in real time. The most characteristics terms are displayed with
-a blue bar or a red one for those with a negative keyness.
+You can change the number of clusters, the displayed statistic, etc., and
+see the result in real time. By default the most specific terms are displayed with
+a blue bar or a red one for those with a negative keyness (if *Show negative values* 
+has been checked).
 
-It's also possible to display terms keyness as word clouds :
+The *Cluster documents* tab allows to browse the documents of a given cluster. You can filter them by giving a term or a regular expression in the *Filter by term* field :
 
-![](rainette_explor_en_cloud.png)
+![](rainette_explor_docs_en.png)
 
-At any time, you can click on the *Get R code* button to get the R code to
-reproduce the current plot and to compute cluster membership.
+In the *Summary* tab, you can click on the *Get R code* button to get the R code to reproduce the current plot and to compute cluster membership.
 
-You can also directly use `cutree_rainette` to get each document cluster at
+You can also directly use `cutree` to get each document cluster at
 level `k` :
 
 ```{r}
-groups <- cutree_rainette(res, k = 3)
+cluster <- cutree(res, k = 5)
 ```
+
 This vector can be used, for example, as a new corpus metadata variable :
 
 ```{r}
-corpus$group <- groups
+corpus$cluster <- cutree(res, k = 5)
 head(docvars(corpus))
 ```
 
-Finally, you can also directly compute each cluster keyness statistics with the
-`rainette_stats` function :
+Here, the clusters have been assigned to the segments, not to the original documents as a whole. The `clusters_by_doc_table` allows to display, for each original document, the number of segment belonging to each cluster :
 
 ```{r}
-rainette_stats(corpus$group, dtm, n_terms = 5)
+clusters_by_doc_table(corpus, clust_var = "cluster")
 ```
+
+By adding `prop = TRUE`, the same table is displayed with row percentages :
+
+```{r}
+clusters_by_doc_table(corpus, clust_var = "cluster", prop = TRUE)
+```
+
+Conversely, the `docs_by_cluster_table` allows to display, for each cluster, the number and proportion of original document including at least one segment of this cluster :
+
+```{r}
+docs_by_cluster_table(corpus, clust_var = "cluster")
+```
+
 
 ## Double clustering
 
 `rainette` also offers a "double clustering" algorithm, as described above : two
-simple clusterings are computed with varying `min_uc_size`, and then combined
+simple clusterings are computed with varying `min_segment_size`, and then combined
 to get a better partition and more robust clusters.
 
-This can be done with the `rainette2` function
+This can be done with the `rainette2` function. It can be applied to two already 
+computed simple clusterings. Here, we compute them with `min_segment_size` at 10 and 15 :
 
-`rainette2` can be applied to two already computed simple clusterings. Here,
-we compute them with `min_uc_size` at 10 and 15 :
-
-```{r message=FALSE}
-res1 <- rainette(dtm, k = 5, min_uc_size = 10, min_split_members = 10)
-res2 <- rainette(dtm, k = 5, min_uc_size = 15, min_split_members = 10)
+```{r message=FALSE, warning=FALSE}
+res1 <- rainette(dtm, k = 5, min_segment_size = 10, min_split_members = 10)
+res2 <- rainette(dtm, k = 5, min_segment_size = 15, min_split_members = 10)
 ```
 
 We then use `rainette2` to combine them. The main function arguments are
 `max_k`, the maximum number of clusters, and `min_members`, the minimum
 cluster size :
 
-```{r message=FALSE}
+```{r message=FALSE, warning=FALSE}
 res <- rainette2(res1, res2, max_k = 5, min_members = 10)
 ```
 
 Another way is to call `rainette2` directly on our `dtm` matrix by giving it
-two `uc_size1` and `uc_size2` arguments :
+two `min_segment_size1` and `min_segment_size2` arguments :
 
-```{r eval=FALSE}
-res <- rainette2(dtm, uc_size1 = 10, uc_size2 = 15, max_k = 5, min_members = 10)
+```{r eval=FALSE, warning=FALSE}
+res <- rainette2(dtm, min_segment_size1 = 10, min_segment_size2 = 15, max_k = 5, min_members = 10)
 ```
 
 The resulting object is a *tibble* with, for each level *k*, the optimal
@@ -255,7 +264,7 @@ partitions and their characteristics. Another interactive interface is
 available to explore the results. It is launched with `rainette2_explor` :
 
 ```{r eval=FALSE}
-rainette2_explor(res, dtm)
+rainette2_explor(res, dtm, corpus)
 ```
 
 ![](rainette2_explor_en.png)
@@ -263,20 +272,13 @@ rainette2_explor(res, dtm)
 The interface is very similar to the previous one, except there is no
 dendrogram anymore, but a single barplot with each cluster size instead. Be
 careful of the number of `NA` (not assigned documents), as it can be quite
-high. You can still use the *Get R code* button to get the current plot code,
-and use `cutree_rainette` to get clusters membership.
+high. 
 
-`rainette_stats` can also be used to get keyness statistics for each cluster :
-
-```{r}
-groups <- cutree(res, 3)
-rainette_stats(groups, dtm, n_terms = 5)
-```
-
-Finally, if some points are not assigned to any cluster, you can use
+If some points are not assigned to any cluster, you can use
 `rainette2_complete_groups` to assign them to the nearest one by using a
-*k-nearest-neighbors* algorithm :
+*k-nearest-neighbors* algorithm (with k=1) :
 
 ```{r}
-groups_completed <- rainette2_complete_groups(dtm, groups)
+clusters <- cutree(res, k = 5)
+clusters_completed <- rainette2_complete_groups(dtm, clusters)
 ```
