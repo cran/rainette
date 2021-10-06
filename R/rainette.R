@@ -52,7 +52,7 @@
 rainette <- function(
   dtm, k = 10, min_segment_size = 0,
   doc_id = NULL, min_split_members = 5,
-  cc_test = 0.3, tsj = 3, 
+  cc_test = 0.3, tsj = 3,
   min_members, min_uc_size
   ) {
 
@@ -76,6 +76,8 @@ rainette <- function(
     min_split_members <- 3
   }
 
+  ## Remove empty strings to avoid subcript out of bounds errors
+  dtm <- quanteda::dfm_remove(dtm, "")
   dtm <- quanteda::dfm_weight(dtm, scheme = "boolean")
 
   if (min_segment_size > 1) {
@@ -182,7 +184,8 @@ rainette <- function(
     labels = as.character(1:k),
     merge = merge,
     group = group,
-    uce_groups = uce_groups
+    uce_groups = uce_groups,
+    corresp_uce_uc = corresp_uce_uc
   )
 
   class(hres) <- c("rainette", "hclust")

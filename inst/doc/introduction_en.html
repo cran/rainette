@@ -12,7 +12,7 @@
 
 <meta name="author" content="Julien Barnier" />
 
-<meta name="date" content="2021-06-25" />
+<meta name="date" content="2021-10-06" />
 
 <title>[en] Introduction to rainette</title>
 
@@ -318,7 +318,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">[en] Introduction to rainette</h1>
 <h4 class="author">Julien Barnier</h4>
-<h4 class="date">2021-06-25</h4>
+<h4 class="date">2021-10-06</h4>
 
 
 
@@ -450,7 +450,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## 6 1789 Washington    George  none 1789-Washington       5</code></pre>
 <p>Here, the clusters have been assigned to the segments, not to the original documents as a whole. The <code>clusters_by_doc_table</code> allows to display, for each original document, the number of segment belonging to each cluster :</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">clusters_by_doc_table</span>(corpus, <span class="dt">clust_var =</span> <span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
-<pre><code>## # A tibble: 59 x 6
+<pre><code>## # A tibble: 59 × 6
 ##    doc_id          clust_1 clust_2 clust_3 clust_4 clust_5
 ##    &lt;chr&gt;             &lt;int&gt;   &lt;int&gt;   &lt;int&gt;   &lt;int&gt;   &lt;int&gt;
 ##  1 1789-Washington       0       0       4      27       6
@@ -466,7 +466,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## # … with 49 more rows</code></pre>
 <p>By adding <code>prop = TRUE</code>, the same table is displayed with row percentages :</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">clusters_by_doc_table</span>(corpus, <span class="dt">clust_var =</span> <span class="st">&quot;cluster&quot;</span>, <span class="dt">prop =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## # A tibble: 59 x 6
+<pre><code>## # A tibble: 59 × 6
 ##    doc_id          clust_1 clust_2 clust_3 clust_4 clust_5
 ##    &lt;chr&gt;             &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
 ##  1 1789-Washington    0       0      10.8     73.0   16.2 
@@ -482,7 +482,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 ## # … with 49 more rows</code></pre>
 <p>Conversely, the <code>docs_by_cluster_table</code> allows to display, for each cluster, the number and proportion of original document including at least one segment of this cluster :</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1"><span class="kw">docs_by_cluster_table</span>(corpus, <span class="dt">clust_var =</span> <span class="st">&quot;cluster&quot;</span>)</a></code></pre></div>
-<pre><code>## # A tibble: 5 x 3
+<pre><code>## # A tibble: 5 × 3
 ##   cluster     n   `%`
 ##   &lt;chr&gt;   &lt;int&gt; &lt;dbl&gt;
 ## 1 clust_1    52  88.1
