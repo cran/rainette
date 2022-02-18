@@ -1,6 +1,7 @@
-## ----message=FALSE------------------------------------------------------------
+## ----message=FALSE, warning=FALSE---------------------------------------------
 library(rainette)
 library(quanteda)
+
 ## Import du corpus
 fichier <- system.file("extdata", "manifeste_pc.txt", package = "rainette")
 corpus <- import_corpus_iramuteq(fichier)
@@ -26,7 +27,8 @@ as.character(corpus)[1:2]
 ## -----------------------------------------------------------------------------
 tok <- tokens(corpus, remove_punct = TRUE, remove_numbers = TRUE)
 tok <- tokens_remove(tok, stopwords("fr"))
-dtm <- dfm(tok, tolower = TRUE)
+tok <- tokens_tolower(tok)
+dtm <- dfm(tok)
 
 ## -----------------------------------------------------------------------------
 dtm <- dfm_trim(dtm, min_docfreq = 3)
@@ -61,14 +63,11 @@ clusters_by_doc_table(corpus, clust_var = "groupe", prop = TRUE)
 docs_by_cluster_table(corpus, clust_var = "groupe")
 
 ## ----message=FALSE, warning=FALSE---------------------------------------------
-res1 <- rainette(dtm, k = 7, min_segment_size = 10, min_split_members = 10)
-res2 <- rainette(dtm, k = 7, min_segment_size = 15, min_split_members = 10)
+res1 <- rainette(dtm, k = 7, min_segment_size = 10)
+res2 <- rainette(dtm, k = 7, min_segment_size = 15)
 
 ## ----message=FALSE------------------------------------------------------------
-res <- rainette2(res1, res2, max_k = 7, min_members = 10)
-
-## ----eval=FALSE---------------------------------------------------------------
-#  res <- rainette2(dtm, min_segment_size1 = 10, min_segment_size2 = 15, max_k = 7, min_members = 10)
+res <- rainette2(res1, res2, max_k = 7)
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  rainette2_explor(res, dtm, corpus)

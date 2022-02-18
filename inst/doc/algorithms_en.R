@@ -1,8 +1,8 @@
 ## ----echo=FALSE---------------------------------------------------------------
-set.seed(1337)
+set.seed(13)
 m <- matrix(sample(0:1, 20, replace = TRUE), nrow = 4)
 rownames(m) <- paste0("doc", 1:4)
-colnames(m) <- c("partir", "un", "jour", "sans", "retour")
+colnames(m) <- c("return", "of", "the", "obra", "dinn")
 m
 
 ## ----echo=FALSE---------------------------------------------------------------

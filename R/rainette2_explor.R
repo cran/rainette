@@ -26,6 +26,16 @@ rainette2_explor <- function(res, dtm = NULL, corpus_src = NULL) {
     stop("trying to run rainette2_explor on a rainette result object.")
   }
 
+  ## If rainette2 has been called with full=FALSE, only chi2 criterion is available
+  criterion_choices <- c(
+    "Sum of chi-squared" = "chi2"
+  )
+  if (!is.null(attr(res, "full")) && attr(res, "full")) {
+    criterion_choices <- c(
+      criterion_choices,
+      "Sum of sizes" = "n"
+    )
+  }
   res_name <- deparse(substitute(res))
   dtm_name <- deparse(substitute(dtm))
   max_n_groups <- max(res$k, na.rm = TRUE)
@@ -37,7 +47,7 @@ rainette2_explor <- function(res, dtm = NULL, corpus_src = NULL) {
     miniTabstripPanel(
       miniTabPanel(
         "Summary",
-        icon = shiny::icon("bar-chart"),
+        icon = shiny::icon("chart-bar"),
         miniContentPanel(
           fillRow(
             flex = c(1, 3),
@@ -51,10 +61,7 @@ rainette2_explor <- function(res, dtm = NULL, corpus_src = NULL) {
                   min = 2, max = max_n_groups, step = 1
                 ),
                 selectInput("criterion", "Partition criterion",
-                  choices = c(
-                    "Partition sum of chi-squared" = "chi2",
-                    "Partition sum of sizes" = "n"
-                  )
+                  choices = criterion_choices
                 ),
                 checkboxInput("complete_km", label = "Complete with k-nearest neighbours", value = FALSE),
                 selectInput("measure", "Statistics",
@@ -93,26 +100,33 @@ rainette2_explor <- function(res, dtm = NULL, corpus_src = NULL) {
         )
       ),
           miniTabPanel(
-        "Cluster documents", icon = shiny::icon("file-text"),
+        "Cluster documents", icon = shiny::icon("file-alt"),
         miniContentPanel(
           docs_sample_ui("rainette2", res)
         )
-      ) 
+      )
     )
   )
 
   server <- function(input, output, session) {
 
     plot_code <- reactive({
-      code <- paste0("rainette2_plot(", res_name, ",", dtm_name,", k = ", input$k,
-        ", criterion = \"", input$criterion, "\"",
-        ", complete_groups = \"", input$complete_km, "\"",
-        ", type = \"bar\"",
-        ", n_terms = ", input$n_terms,
-        ", free_scales = ", !input$same_scales,
-        ", measure = \"", input$measure, "\"",
-        ", show_negative = \"", input$show_negative, "\"",
-        ", text_size = ", input$text_size, ")")
+      code <- paste0("rainette2_plot(\n  ", res_name, ", ", dtm_name, ", k = ", input$k,
+        ",\n  criterion = \"", input$criterion, "\"",
+        ",\n  n_terms = ", input$n_terms,
+        ",\n  free_scales = ", !input$same_scales,
+        ",\n  measure = \"", input$measure, "\"",
+        ",\n  show_negative = ", input$show_negative,
+        ifelse(input$complete_km,
+          paste0(",\n  complete_groups = \"", input$complete_km, "\""),
+          ""
+        ),
+        ifelse(input$text_size != "10",
+          paste0(",\n  text_size = ", input$text_size),
+          ""
+        ),
+        "\n)"
+      )
       code
     })
 
@@ -139,9 +153,6 @@ rainette2_explor <- function(res, dtm = NULL, corpus_src = NULL) {
       code <- paste0(code, plot_code())
       code <- paste0(code, "\n## Groups\n")
       code <- paste0(code, cutree_code())
-      code <- formatR::tidy_source(text = code,
-        width.cutoff = 75,
-        output = FALSE)$text.tidy
       code
     })
 
@@ -161,7 +172,7 @@ rainette2_explor <- function(res, dtm = NULL, corpus_src = NULL) {
         easyClose = TRUE))
     })
 
-    current_k <- reactive({input$k})
+    current_k <- shiny::reactive(input$k)
     docs_sample_server("rainette2", res, corpus_src, current_k)
 
     # Handle the Done button being pressed.

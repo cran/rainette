@@ -1,3 +1,28 @@
+# rainette 0.3.0
+
+## New features
+
+Rework of the double classification computation :
+
+- New `full` argument to `rainette2()`. If `TRUE` (default, same behavior as previous versions), all crossings between groups of the two single classifications are taken into account to find the best partition. If `FALSE`, only the crossings with maximal associations are kept.
+- New `parallel` argument to `rainette2()` to compute partitions with `mclapply` (`FALSE` by default, won't work on Windows, uses more RAM)
+- Global optimization and speed up of `rainette2()` computations, with added progress bars to better estimate long runs
+
+## Documentation
+
+- Improved french vignette "description des algorithmes"
+- New english vignette "algorithms description"
+- Reworked french and english introduction vignettes
+
+## Deprecated features
+
+- The wordcloud plots will be deprecated in a near future. A warning has been added to `rainette_plot()` and `rainette2_plot()` if they are called with `type = "cloud"`.
+
+## Other
+
+- Add `show_na_title`, `cluster_label` and `keyness_plot_xlab` arguments to `rainette_plot()` to customize graphics output
+- Fix warnings in Font Awesome icon names
+
 # rainette 0.2.1
 
 - Add option to show merged segments in document browser

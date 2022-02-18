@@ -35,7 +35,7 @@ cutree <- function(tree, ...) {
 #'
 #' @export
 
-cutree_rainette <- function(hres, k = NULL, h = NULL,...) {
+cutree_rainette <- function(hres, k = NULL, h = NULL, ...) {
   if (!is.null(h)) {
     stop("cutree_rainette only works with k argument")
   }
@@ -55,21 +55,24 @@ cutree_rainette <- function(hres, k = NULL, h = NULL,...) {
 #' A vector with group membership.
 #'
 #' @seealso [rainette2_complete_groups()]
-#'
+#' @importFrom rlang .env
 #' @export
 
 cutree_rainette2 <- function(res, k, criterion = c("chi2", "n"), ...) {
   criterion <- match.arg(criterion)
-  line <- res %>% filter(k == !!k)
+  line <- res %>%
+    dplyr::filter(k == .env$k)
   if (criterion == "chi2") {
     line <- line %>%
-      filter(chi2 == max(chi2))
+      dplyr::slice_max(.data$chi2)
   }
   if (criterion == "n") {
     line <- line %>%
-      filter(n == max(n))
+      dplyr::slice_max(.data$n)
   }
-  line %>% pull(groups) %>% unlist
+  line %>%
+    dplyr::pull(.data$groups) %>%
+    unlist()
 }
 
 
@@ -110,4 +113,3 @@ rainette2_complete_groups <- function(dfm, groups, k = 1, ...) {
   groups
 
 }
-

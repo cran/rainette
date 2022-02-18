@@ -1,20 +1,14 @@
-if (getRversion() >= "2.15.1")
-  utils::globalVariables(c("Dim1", "distance", "index", "segment", "segment_source", "weight", "p",
-    "chi2", "n_both", "n1", "n2", "g1", "g2", "level1", "level2", "members", "clusters", "feature",
-    "Group", "rainette_group", "text"))
-
-
-#' Merges uces into uc according to minimum uc size
+#' Merges segments according to minimum segment size
 #'
 #' `rainette_uc_index` docvar
 #'
-#' @param dtm dtm of uces, with a `rainette_uce_id` docvar
-#' @param min_segment_size minimum number of forms by uc
+#' @param dtm dtm of segments
+#' @param min_segment_size minimum number of forms by segment
 #' @param doc_id character name of a dtm docvar which identifies source documents.
 #'
 #' @details
-#' If `min_segment_size == 0`, different uc ids are added to the dtm docvars
-#' (ie no uce are merged together). If `min_segment_size > 0` then `doc_id` must be provided
+#' If `min_segment_size == 0`, no segments are merged together.
+#' If `min_segment_size > 0` then `doc_id` must be provided
 #' unless the corpus comes from `split_segments`, in this case
 #' `segment_source` is used by default.
 #'
@@ -66,7 +60,7 @@ merge_segments <- function(dtm, min_segment_size = 10, doc_id = NULL) {
       } else {
         ## If new index is out of bounds or in another document
         ## replace current uc index with the previous one, if any
-        current_doc_id <- doc_ids[grouping_index ]
+        current_doc_id <- doc_ids[grouping_index]
         current_uc_id <- uc_id[grouping_index]
         other_uc_ids <- uc_id[doc_ids == current_doc_id & uc_id < current_uc_id]
         if (length(other_uc_ids) > 0) {
@@ -99,9 +93,9 @@ merge_segments <- function(dtm, min_segment_size = 10, doc_id = NULL) {
 #' @param prop if TRUE, returns the percentage of each cluster by document
 #'
 #' @details
-#' This function is only useful for previously segmented corpus. If `doc_id` 
+#' This function is only useful for previously segmented corpus. If `doc_id`
 #' is NULL and there is a `sement_source` docvar, it will be used instead.
-#' 
+#'
 #' @seealso [docs_by_cluster_table()]
 #'
 #' @examples
@@ -160,7 +154,7 @@ clusters_by_doc_table <- function(obj, clust_var = NULL, doc_id = NULL, prop = F
   if (prop) {
     res <- res %>%
       dplyr::group_by(.data$doc_id) %>%
-      dplyr::mutate(n = n / sum(n) * 100) %>%
+      dplyr::mutate(n = .data$n / sum(.data$n) * 100) %>%
       dplyr::ungroup()
   }
 
@@ -169,7 +163,7 @@ clusters_by_doc_table <- function(obj, clust_var = NULL, doc_id = NULL, prop = F
     tidyr::pivot_wider(
       id_cols = .data$doc_id,
       names_from = .data$cluster,
-      values_from = n,
+      values_from = .data$n,
       names_prefix = names_prefix,
       values_fill = 0
     ) %>%
@@ -177,7 +171,7 @@ clusters_by_doc_table <- function(obj, clust_var = NULL, doc_id = NULL, prop = F
 
   cols <- sort(colnames(res))
   cols <- cols[cols != "doc_id"]
-  dplyr::relocate(res, .data$doc_id, cols)
+  dplyr::relocate(res, doc_id, cols)
 }
 
 
@@ -195,7 +189,7 @@ clusters_by_doc_table <- function(obj, clust_var = NULL, doc_id = NULL, prop = F
 #' and there is a `sement_source` docvar, it will be used instead.
 #'
 #' @seealso [clusters_by_doc_table()]
-#' 
+#'
 #' @examples
 #' \donttest{
 #' require(quanteda)
@@ -215,14 +209,13 @@ clusters_by_doc_table <- function(obj, clust_var = NULL, doc_id = NULL, prop = F
 docs_by_cluster_table <- function(obj, clust_var = NULL, doc_id = NULL, threshold = 1) {
 
   count <- clusters_by_doc_table(obj, clust_var = clust_var, doc_id = doc_id, prop = FALSE)
-  n_docs <- nrow(count)
 
   count %>%
     dplyr::select(-.data$doc_id) %>%
     dplyr::mutate(dplyr::across(.fns = function(v) v >= threshold)) %>%
     dplyr::summarise(dplyr::across(.fns = sum)) %>%
-    tidyr::pivot_longer(cols = everything(), names_to = "cluster", values_to = "n") %>%
-    dplyr::mutate(`%` = .data$n / n_docs * 100)
+    tidyr::pivot_longer(cols = dplyr::everything(), names_to = "cluster", values_to = "n") %>%
+    dplyr::mutate(`%` = .data$n / nrow(.env$count) * 100)
 
 }
 
@@ -231,12 +224,11 @@ docs_by_cluster_table <- function(obj, clust_var = NULL, doc_id = NULL, threshol
 
 stat_col <- function(measure) {
 
-  stat_col <- switch(measure,
+  switch(measure,
     "chi2" = "chi2",
     "lr" = "G2",
     "frequency" = "frequency",
     "docprop" = "docprop"
   )
-  rlang::sym(stat_col)
 
 }

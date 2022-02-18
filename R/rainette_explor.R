@@ -40,8 +40,7 @@ rainette_explor <- function(res, dtm = NULL, corpus_src = NULL) {
 
   ## If res is a rainette2 result, launch rainette2_explor
   if (inherits(res, "rainette2")) {
-    rainette::rainette2_explor(res, dtm, corpus_src)
-    return()
+    stop("trying to use rainette_explor() on a rainette2 result object. Use rainette2_explor() instead.")
   }
 
   if (length(res$group) != ndoc(dtm)) {
@@ -57,7 +56,7 @@ rainette_explor <- function(res, dtm = NULL, corpus_src = NULL) {
     tags$head(tags$style(rainette_explor_css())),
     miniTabstripPanel(
       miniTabPanel(
-        "Summary", icon = shiny::icon("bar-chart"),
+        "Summary", icon = shiny::icon("chart-bar"),
         miniContentPanel(
           fillRow(
             flex = c(1, 3),
@@ -106,7 +105,7 @@ rainette_explor <- function(res, dtm = NULL, corpus_src = NULL) {
         )
       ),
       miniTabPanel(
-        "Cluster documents", icon = shiny::icon("file-text"),
+        "Cluster documents", icon = shiny::icon("file-alt"),
         miniContentPanel(
           docs_sample_ui("rainette1", res)
         )
@@ -117,13 +116,16 @@ rainette_explor <- function(res, dtm = NULL, corpus_src = NULL) {
   server <- function(input, output, session) {
     plot_code <- reactive({
       code <- paste0(
-          "rainette_plot(", res_name, ",", dtm_name, ", k = ", input$k,
-          ", type = \"bar\"",
-          ", n_terms = ", input$n_terms,
-          ", free_scales = ", !input$same_scales,
-          ", measure = \"", input$measure, "\"",
-          ", show_negative = \"", input$show_negative, "\"",
-          ", text_size = ", input$text_size, ")"
+          "rainette_plot(\n  ", res_name, ", ", dtm_name, ", k = ", input$k,
+          ",\n  n_terms = ", input$n_terms,
+          ",\n  free_scales = ", !input$same_scales,
+          ",\n  measure = \"", input$measure, "\"",
+          ",\n  show_negative = ", input$show_negative,
+          ifelse(input$text_size != "10",
+            paste0(",\n  text_size = ", input$text_size),
+            ""
+          ),
+        "\n)"
       )
       code
     })
@@ -140,11 +142,6 @@ rainette_explor <- function(res, dtm = NULL, corpus_src = NULL) {
       code <- paste0(code, plot_code())
       code <- paste0(code, "\n## Groups\n")
       code <- paste0(code, cutree_code())
-      code <- formatR::tidy_source(
-        text = code,
-        width.cutoff = 75,
-        output = FALSE
-      )$text.tidy
       code
     })
 
@@ -167,7 +164,7 @@ rainette_explor <- function(res, dtm = NULL, corpus_src = NULL) {
       ))
     })
 
-    current_k <- shiny::reactive({input$k})
+    current_k <- shiny::reactive(input$k)
     docs_sample_server("rainette1", res, corpus_src, current_k)
 
     # Handle the Done button being pressed.
@@ -188,5 +185,3 @@ rainette_explor <- function(res, dtm = NULL, corpus_src = NULL) {
     ui, server
   )
 }
-
-
