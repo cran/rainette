@@ -12,10 +12,39 @@
 
 <meta name="author" content="Julien Barnier" />
 
-<meta name="date" content="2022-02-18" />
+<meta name="date" content="2023-03-17" />
 
 <title>[en] Algorithms description</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -25,6 +54,7 @@
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   ul.task-list{list-style: none;}
     </style>
+
 
 
 
@@ -225,14 +255,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">[en] Algorithms description</h1>
 <h4 class="author">Julien Barnier</h4>
-<h4 class="date">2022-02-18</h4>
+<h4 class="date">2023-03-17</h4>
 
 
 
 <p>The goal of this document is to describe the algorithms used in the <code>rainette</code> package and their implementation. This implementation has been based upon two main resources :</p>
 <ul>
 <li>the three papers from Max Reinert cited in <a href="#references">references</a> (in french)</li>
-<li>the source code of <a href="http://www.iramuteq.org/">Iramuteq</a>, especially the <code>CHD.R</code> and <code>chdtxt.R</code> files. Note however that the code has been almost entirely rewritten (in part in C++ via <a href="http://rcpp.org/">Rcpp</a>).</li>
+<li>the source code of <a href="http://www.iramuteq.org/">Iramuteq</a>, especially the <code>CHD.R</code> and <code>chdtxt.R</code> files. Note however that the code has been almost entirely rewritten (in part in C++ via <a href="https://www.rcpp.org/">Rcpp</a>).</li>
 </ul>
 <div id="simple-clustering-algorithm" class="section level2">
 <h2>Simple clustering algorithm</h2>

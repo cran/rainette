@@ -9,6 +9,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+Pour une présentation en français des principes de la méthode et de son utilisation dans `rainette`, vous pouvez aussi consulter la vidéo d'une intervention réalisée dans le cadre d'[un tuto](https://mate-shs.cnrs.fr/actions/tutomate/tuto42-rainette-julien-barnier/) du réseau métier [Mate-shs](https://mate-shs.cnrs.fr/).
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/T9r8T5WZYHY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
 # Préparation du corpus
 
 ## Importation
@@ -206,4 +211,10 @@ groupes <- cutree(res, k = 5)
 groupes_complets <- rainette2_complete_groups(dtm, groupes)
 ```
 
+
+# Traitements complémentaires
+
+Dans sa version originale, la méthode Reinert de classification est souvent suivie par une analyse complémentaire centrée sur les mots-outils et par différentes représentations graphiques, notamment en projetant les classes obtenues sur des résultats d'analyses factorielles.
+
+On trouvera une explication et un exemple d'application, ainsi qu'un aperçu des fondements théoriques de la méthode dans l'article de Claire Tissot : [Analyse textuelle du roman « Sarrasine » d’Honoré de Balzac : de la recherche de thèmes à la sémiotique](https://fr937137372.wordpress.com/2022/05/06/analyse-textuelle-du-roman-sarrasine-dhonore-de-balzac-de-la-recherche-de-themes-a-la-semiotique/).
 
