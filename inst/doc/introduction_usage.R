@@ -40,14 +40,14 @@ res <- rainette(dtm, k = 5, min_segment_size = 10, min_split_members = 10)
 res
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  rainette_explor(res, dtm, corpus)
+# rainette_explor(res, dtm, corpus)
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  ## Clustering description plot
-#  rainette_plot(res, dtm, k = 5, type = "bar", n_terms = 20, free_scales = FALSE,
-#      measure = "chi2", show_negative = "TRUE", text_size = 11)
-#  ## Groups
-#  cutree(res, k = 5)
+# ## Clustering description plot
+# rainette_plot(res, dtm, k = 5, type = "bar", n_terms = 20, free_scales = FALSE,
+#     measure = "chi2", show_negative = "TRUE", text_size = 11)
+# ## Groups
+# cutree(res, k = 5)
 
 ## -----------------------------------------------------------------------------
 corpus$groupe <- cutree(res, k = 5)
@@ -70,7 +70,7 @@ res2 <- rainette(dtm, k = 7, min_segment_size = 15)
 res <- rainette2(res1, res2, max_k = 7)
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  rainette2_explor(res, dtm, corpus)
+# rainette2_explor(res, dtm, corpus)
 
 ## -----------------------------------------------------------------------------
 groupes <- cutree(res, k = 5)

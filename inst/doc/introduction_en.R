@@ -27,7 +27,7 @@ dtm <- dfm_trim(dtm, min_docfreq = 10)
 res <- rainette(dtm, k = 5, min_segment_size = 15)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  rainette_explor(res, dtm, corpus)
+# rainette_explor(res, dtm, corpus)
 
 ## -----------------------------------------------------------------------------
 cluster <- cutree(res, k = 5)
@@ -53,7 +53,7 @@ res2 <- rainette(dtm, k = 5, min_segment_size = 15)
 res <- rainette2(res1, res2, max_k = 5)
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  rainette2_explor(res, dtm, corpus)
+# rainette2_explor(res, dtm, corpus)
 
 ## -----------------------------------------------------------------------------
 clusters <- cutree(res, k = 5)

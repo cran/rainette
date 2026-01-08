@@ -1,3 +1,8 @@
+# rainette 0.3.2
+
+- Fix compatibility with new `vctrs` version
+- Add `colors` argument to `rainette_plot()` to allow to specify custom colors for clusters (#37, thanks @lvaudor)
+
 # rainette 0.3.1
 
 - Replace call to `palette.colors()` with manual colors vector to ensure compatibility with R 3.6 (#11)

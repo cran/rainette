@@ -16,7 +16,8 @@ rainette_plot(
   text_size = NULL,
   show_na_title = TRUE,
   cluster_label = NULL,
-  keyness_plot_xlab = NULL
+  keyness_plot_xlab = NULL,
+  colors = NULL
 )
 }
 \arguments{
@@ -41,9 +42,12 @@ rainette_plot(
 \item{show_na_title}{if TRUE, show number of NA as plot title}
 
 \item{cluster_label}{define a specific term for clusters identification in keyness plots.
-Default is "Cluster" or "Cl." depending on the number of groups.}
+Default is "Cluster" or "Cl." depending on the number of groups. If a vector of length > 1,
+define the cluster labels manually.}
 
 \item{keyness_plot_xlab}{define a specific x label for keyness plots.}
+
+\item{colors}{vector of custom colors for cluster titles and branches (in the order of the clusters)}
 }
 \value{
 A gtable object.
@@ -63,6 +67,12 @@ dtm <- dfm(tok, tolower = TRUE)
 dtm <- dfm_trim(dtm, min_docfreq = 3)
 res <- rainette(dtm, k = 3, min_segment_size = 15)
 rainette_plot(res, dtm)
+rainette_plot(
+  res,
+  dtm,
+  cluster_label = c("Assets", "Future", "Values"),
+  colors = c("red", "slateblue", "forestgreen")
+)
 }
 
 }
