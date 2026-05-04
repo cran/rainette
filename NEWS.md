@@ -1,3 +1,7 @@
+# rainette 0.3.3
+
+- Fix incompatibility with upcoming R 4.7
+
 # rainette 0.3.2
 
 - Fix compatibility with new `vctrs` version

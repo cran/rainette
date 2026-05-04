@@ -12,7 +12,7 @@
 
 <meta name="author" content="Julien Barnier" />
 
-<meta name="date" content="2026-01-05" />
+<meta name="date" content="2026-05-04" />
 
 <title>[en] Introduction to rainette</title>
 
@@ -62,7 +62,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -340,7 +340,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">[en] Introduction to rainette</h1>
 <h4 class="author">Julien Barnier</h4>
-<h4 class="date">2026-01-05</h4>
+<h4 class="date">2026-05-04</h4>
 
 
 
@@ -381,7 +381,7 @@ keeps the original corpus metadata and adds an additional
 <code>segment_source</code> variable, which keeps track of which segment
 belongs to which document.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>corpus</span></code></pre></div>
-<pre><code>## Corpus consisting of 3,641 documents and 5 docvars.
+<pre><code>## Corpus consisting of 3,658 documents and 5 docvars.
 ## 1789-Washington_1 :
 ## &quot;Fellow-Citizens of the Senate and of the House of Representa...&quot;
 ## 
@@ -400,7 +400,7 @@ belongs to which document.</p>
 ## 1789-Washington_6 :
 ## &quot;In this conflict of emotions all I dare aver is that it has ...&quot;
 ## 
-## [ reached max_ndoc ... 3,635 more documents ]</code></pre>
+## [ reached max_ndoc ... 3,652 more documents ]</code></pre>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">docvars</span>(corpus))</span></code></pre></div>
 <pre><code>##   Year  President FirstName Party  segment_source
 ## 1 1789 Washington    George  none 1789-Washington
@@ -489,13 +489,13 @@ belonging to each cluster :</p>
 ##  1 1789-Washington       0       0       6      29       2
 ##  2 1793-Washington       0       0       4       0       0
 ##  3 1797-Adams            0       8       2      46       3
-##  4 1801-Jefferson        0      20       2      20       2
-##  5 1805-Jefferson        0       3       3      45       6
+##  4 1801-Jefferson        0      18       2      22       2
+##  5 1805-Jefferson        0       5       3      43       6
 ##  6 1809-Madison          0       0       7      17       4
-##  7 1813-Madison          0       5       3      25       0
+##  7 1813-Madison          0       5       3      23       2
 ##  8 1817-Monroe           0       3      10      61      14
-##  9 1821-Monroe           0       0      10      77      28
-## 10 1825-Adams            0       8       8      53       8
+##  9 1821-Monroe           0       2      10      72      31
+## 10 1825-Adams            0      10       8      49      10
 ## # ℹ 50 more rows</code></pre>
 <p>By adding <code>prop = TRUE</code>, the same table is displayed with
 row percentages :</p>
@@ -506,13 +506,13 @@ row percentages :</p>
 ##  1 1789-Washington       0    0      16.2     78.4    5.41
 ##  2 1793-Washington       0    0     100        0      0   
 ##  3 1797-Adams            0   13.6     3.39    78.0    5.08
-##  4 1801-Jefferson        0   45.5     4.55    45.5    4.55
-##  5 1805-Jefferson        0    5.26    5.26    78.9   10.5 
+##  4 1801-Jefferson        0   40.9     4.55    50      4.55
+##  5 1805-Jefferson        0    8.77    5.26    75.4   10.5 
 ##  6 1809-Madison          0    0      25       60.7   14.3 
-##  7 1813-Madison          0   15.2     9.09    75.8    0   
+##  7 1813-Madison          0   15.2     9.09    69.7    6.06
 ##  8 1817-Monroe           0    3.41   11.4     69.3   15.9 
-##  9 1821-Monroe           0    0       8.70    67.0   24.3 
-## 10 1825-Adams            0   10.4    10.4     68.8   10.4 
+##  9 1821-Monroe           0    1.74    8.70    62.6   27.0 
+## 10 1825-Adams            0   13.0    10.4     63.6   13.0 
 ## # ℹ 50 more rows</code></pre>
 <p>Conversely, the <code>docs_by_cluster_table</code> allows to display,
 for each cluster, the number and proportion of original document
@@ -521,11 +521,11 @@ including at least one segment of this cluster :</p>
 <pre><code>## # A tibble: 5 × 3
 ##   cluster     n   `%`
 ##   &lt;chr&gt;   &lt;int&gt; &lt;dbl&gt;
-## 1 clust_1    13  21.7
-## 2 clust_2    54  90  
-## 3 clust_3    32  53.3
-## 4 clust_4    45  75  
-## 5 clust_5    37  61.7</code></pre>
+## 1 clust_1    14  23.3
+## 2 clust_2    55  91.7
+## 3 clust_3    33  55  
+## 4 clust_4    44  73.3
+## 5 clust_5    38  63.3</code></pre>
 </div>
 <div id="double-clustering" class="section level2">
 <h2>Double clustering</h2>

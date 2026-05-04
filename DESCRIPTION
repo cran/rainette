@@ -1,8 +1,8 @@
 Package: rainette
 Type: Package
 Title: The Reinert Method for Textual Data Clustering
-Version: 0.3.2
-Date: 2026-01-05
+Version: 0.3.3
+Date: 2026-05-04
 Authors@R: c(person("Julien", "Barnier", email="julien.barnier@cnrs.fr",
     role=c("aut","cre")), person("Florian", "Privé",
     email="florian.prive.21@gmail.com", role="ctb"))
@@ -25,8 +25,8 @@ Suggests: testthat, knitr, rmarkdown, tm, FNN, vdiffr,
 RoxygenNote: 7.3.2
 LinkingTo: Rcpp
 NeedsCompilation: yes
-Packaged: 2026-01-05 13:11:02 UTC; julien
+Packaged: 2026-05-04 13:28:24 UTC; julien
 Author: Julien Barnier [aut, cre],
   Florian Privé [ctb]
 Repository: CRAN
-Date/Publication: 2026-01-08 15:50:06 UTC
+Date/Publication: 2026-05-04 18:30:02 UTC
